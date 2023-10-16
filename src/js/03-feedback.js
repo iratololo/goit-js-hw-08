@@ -29,17 +29,16 @@ function hendlerFormSubmit(event) {
     settings.message = message.value;
     console.log(settings);
     event.currentTarget.reset();
-    localStorage.clear();
+    localStorage.removeItem("feedback-form-state");
+    // localStorage.clear();
 }
 
 
 function hendlerStorage() {
-    if (localStorage.length) {
     const savedSettings = localStorage.getItem("feedback-form-state");
-    const parsedSettings = JSON.parse(savedSettings);
+    const parsedSettings = JSON.parse(savedSettings) ?? "";
     selectors.form.elements.email.value = parsedSettings.email || "";
     selectors.form.elements.message.value = parsedSettings.message || "";
-}
 }
 
 
