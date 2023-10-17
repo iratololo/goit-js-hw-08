@@ -13,32 +13,36 @@ window.addEventListener("load", hendlerStorage);
 selectors.form.addEventListener("submit", hendlerFormSubmit);
 
 
-const settings = {};
+let formState = {};
+const LOCAL_KEY = "feedback-form-state";
 
 function hendlerFormСhange(evt) {
-    settings[evt.target.name] = evt.target.value;
-    localStorage.setItem("feedback-form-state", JSON.stringify(settings));
+    formState[evt.target.name] = evt.target.value.trim();
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(formState));
 }
 
 
 
 function hendlerFormSubmit(event) {
     event.preventDefault();
-    const { email, message } = event.currentTarget.elements;
-    settings.email = email.value;
-    settings.message = message.value;
-    console.log(settings);
+    console.log(formState);
+    formState = {};
     event.currentTarget.reset();
-    localStorage.removeItem("feedback-form-state");
-    // localStorage.clear();
+    localStorage.removeItem(LOCAL_KEY);
 }
 
 
 function hendlerStorage() {
-    const savedSettings = localStorage.getItem("feedback-form-state");
-    const parsedSettings = JSON.parse(savedSettings) ?? "";
-    selectors.form.elements.email.value = parsedSettings.email || "";
-    selectors.form.elements.message.value = parsedSettings.message || "";
+    try {
+        const savedSettings = localStorage.getItem(LOCAL_KEY);
+        if (!savedSettings) return;
+        formState = JSON.parse(savedSettings);
+        Object.entries(formState).forEach(([key, val]) => {
+            selectors.form.elements[key].value = val;
+        });
+    } catch ({message}) {
+        console.log(message);
+    }
 }
 
 
